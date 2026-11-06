@@ -20,12 +20,12 @@ jobs:
           python-version: '3.10'
       - name: Install build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends build-essential cmake ninja-build liburing-dev libxxhash-dev libhiredis-dev
+          timeout 300s sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          timeout 300s sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential cmake ninja-build liburing-dev libxxhash-dev libhiredis-dev
           wget -nv -O "$RUNNER_TEMP/cuda-keyring.deb" https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
           sudo dpkg -i "$RUNNER_TEMP/cuda-keyring.deb"
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends cuda-toolkit-12-4
+          timeout 300s sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          timeout 480s sudo env DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=1 -o Acquire::https::Timeout=30 install -y --no-install-recommends cuda-toolkit-12-4
           echo "CUDA_HOME=/usr/local/cuda-12.4" >> "$GITHUB_ENV"
           echo "/usr/local/cuda-12.4/bin" >> "$GITHUB_PATH"
           mkdir -p "$RUNNER_TEMP/cuda-stub"
