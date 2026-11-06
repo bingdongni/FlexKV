@@ -19,6 +19,7 @@ def test_native_swa_failed_tail_counts_only_the_last_checkpoint(swa_env, metrics
     swa_env.c.tick()
     snapshot = swa_env.c.snapshot(handle)
     assert snapshot.terminal and snapshot.loaded_tokens == 16
+    assert snapshot.reason == "partial_read" and snapshot.outcome == "partial"
     assert sample(registry, "flexkv_prefetch_loaded_tokens_total", policy="wait_complete") == 16
     assert sample(registry, "flexkv_prefetch_sessions_total",
-                  policy="wait_complete", reason="demand", outcome="partial") == 1
+                  policy="wait_complete", reason="partial_read", outcome="partial") == 1
